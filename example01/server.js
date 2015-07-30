@@ -1,25 +1,25 @@
 var http = require('http');
-var path = require('path');
+var url = require('url');
 
 var pages = [
-		{route: '/', output: 'Woohoo'},
-		{route: '/about/this', output: 'Multi Level routing with Node example!'},
-		{route: '/about/node', output: 'Evented I/O for v8 Javascript.'},
-		{route: 'another page', output: function() {
-			console.log(this.route);
-			return 'Here\'s ' + this.route;
-		}}
-	];
+	{id: '1', route: '', output: 'Hello skyfly33!'},
+	{id: '2', route: 'about', output: 'A simple routing with Node'},
+	{id: '3', route: 'another page', output: function() {
+		return 'Here\'s' + this.route;
+	}}
+];
 
 http.createServer(function(request, response) {
-	var lookup = decodeURI(request.url);
+	var id = url.parse(decodeURI(request.url), true).query.id;
 
-	pages.forEach(function(page) {
-		if(page.route === lookup){
-			response.writeHead(200, {'Content-type' : 'text/html'});
-			response.end(typeof page.output === 'function' ? page.output() : page.output);
-		}
-	});
+	if(id){
+		pages.forEach(function(page) {
+			if(page.id === id){
+				response.writeHead(200, {'Content-type': 'text/html'});
+				response.end(typeof page.output === 'function' ?  page.output() : page.output);
+			}
+		});
+	}
 
 	if(!response.finished) {
 		response.writeHead(404);
