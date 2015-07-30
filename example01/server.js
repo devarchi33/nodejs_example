@@ -2,15 +2,17 @@ var http = require('http');
 var path = require('path');
 
 var pages = [
-		{route: '', output: 'Woohoo'},
-		{route: 'about', output: 'A simple routing with Node example!'},
+		{route: '/', output: 'Woohoo'},
+		{route: '/about/this', output: 'Multi Level routing with Node example!'},
+		{route: '/about/node', output: 'Evented I/O for v8 Javascript.'},
 		{route: 'another page', output: function() {
+			console.log(this.route);
 			return 'Here\'s ' + this.route;
 		}}
 	];
 
 http.createServer(function(request, response) {
-	var lookup = path.basename(decodeURI(request.url));
+	var lookup = decodeURI(request.url);
 
 	pages.forEach(function(page) {
 		if(page.route === lookup){
